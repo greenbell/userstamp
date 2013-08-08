@@ -28,7 +28,10 @@ module Ddb
           # your own implementation of this method to the private section of
           # the controller where you are including the Userstamp module.
           def set_stamper
-            User.stamper = self.current_user
+            if @current_user.present?
+              User.stamper = Mystyle::User.find(@current_user.user_id) if @current_user.is_a?(Mystyle::Admin)
+              User.stamper = @current_user  if @current_user.is_a?(Mystyle::User)
+            end
           end
 
           # The <tt>reset_stamper</tt> method as implemented here assumes that a
