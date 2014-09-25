@@ -104,9 +104,30 @@ module Ddb #:nodoc:
         def without_stamps
           original_value = self.record_userstamp
           self.record_userstamp = false
-          yield
-          self.record_userstamp = original_value
+          begin
+            yield
+          ensure
+            self.record_userstamp = original_value
+          end
         end
+
+        # Temporarily stamps with substitute. For example:
+        #
+        #   Post.stamps_with_substitute(postman) do
+        #     post = Post.find(params[:id])
+        #     post.update_attributes(params[:post])
+        #     post.save
+        #   end
+        def stamps_with_substitute(stamper)
+          original_value = self.stamper_class.stamper
+          self.stamper_class.stamper = stamper
+          begin
+            yield
+          ensure
+            self.stamper_class.stamper = original_value
+          end
+        end
+
 
         def stamper_class #:nodoc:
           stamper_class_name.to_s.capitalize.constantize rescue nil
