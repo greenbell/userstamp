@@ -142,22 +142,25 @@ module Ddb #:nodoc:
 
           def set_creator_attribute
             return unless self.record_userstamp
+            sid = self.class.stamper_class.stamper.is_a?(Fixnum) ? self.class.stamper_class.stamper : self.class.stamper_class.stamper.id
             if respond_to?(self.creator_attribute.to_sym) && has_stamper?
-              self.send("#{self.creator_attribute}=".to_sym, self.class.stamper_class.stamper.id)
+              self.send("#{self.creator_attribute}=".to_sym, sid)
             end
           end
 
           def set_updater_attribute
             return unless self.record_userstamp
+            sid = self.class.stamper_class.stamper.is_a?(Fixnum) ? self.class.stamper_class.stamper : self.class.stamper_class.stamper.id
             if respond_to?(self.updater_attribute.to_sym) && has_stamper?
-              self.send("#{self.updater_attribute}=".to_sym, self.class.stamper_class.stamper.id)
+              self.send("#{self.updater_attribute}=".to_sym, sid)
             end
           end
 
           def set_deleter_attribute
             return unless self.record_userstamp
+            sid = self.class.stamper_class.stamper.is_a?(Fixnum) ? self.class.stamper_class.stamper : self.class.stamper_class.stamper.id
             if respond_to?(self.deleter_attribute.to_sym) && has_stamper?
-              self.send("#{self.deleter_attribute}=".to_sym, self.class.stamper_class.stamper.id)
+              self.send("#{self.deleter_attribute}=".to_sym, sid)
               save
             end
           end
