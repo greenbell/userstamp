@@ -29,7 +29,7 @@ module Ddb
           # the controller where you are including the Userstamp module.
           def set_stamper
             if @current_user.present?
-              User.stamper = MsUser.find(@current_user.user_id) if @current_user.is_a?(MsAdmin)
+              User.stamper = MsUser.find(@current_user.ms_user_id) if @current_user.is_a?(MsAdmin)
               User.stamper = @current_user  if @current_user.is_a?(MsUser)
             end
           end
