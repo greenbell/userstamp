@@ -82,9 +82,9 @@ module Ddb #:nodoc:
             before_save     :set_updater_attribute
             before_create   :set_creator_attribute
 
-            def creator ;  Mystyle::User.find(send(self.creator_attribute)) rescue nil; end
-            def updater ;  Mystyle::User.find(send(self.updater_attribute)) rescue nil; end
-            def deletor ;  Mystyle::User.find(send(self.deleter_attribute)) rescue nil; end
+            def creator ;  MsUser.find(send(self.creator_attribute)) rescue nil; end
+            def updater ;  MsUser.find(send(self.updater_attribute)) rescue nil; end
+            def deletor ;  MsUser.find(send(self.deleter_attribute)) rescue nil; end
 
             if defined?(Caboose::Acts::Paranoid)
               belongs_to :deleter, :class_name => self.stamper_class_name.to_s.singularize.camelize,
@@ -143,21 +143,24 @@ module Ddb #:nodoc:
           def set_creator_attribute
             return unless self.record_userstamp
             if respond_to?(self.creator_attribute.to_sym) && has_stamper?
-              self.send("#{self.creator_attribute}=".to_sym, self.class.stamper_class.stamper.id)
+              sid = self.class.stamper_class.stamper.is_a?(Fixnum) ? self.class.stamper_class.stamper : self.class.stamper_class.stamper.id
+              self.send("#{self.creator_attribute}=".to_sym, sid)
             end
           end
 
           def set_updater_attribute
             return unless self.record_userstamp
             if respond_to?(self.updater_attribute.to_sym) && has_stamper?
-              self.send("#{self.updater_attribute}=".to_sym, self.class.stamper_class.stamper.id)
+              sid = self.class.stamper_class.stamper.is_a?(Fixnum) ? self.class.stamper_class.stamper : self.class.stamper_class.stamper.id
+              self.send("#{self.updater_attribute}=".to_sym, sid)
             end
           end
 
           def set_deleter_attribute
             return unless self.record_userstamp
             if respond_to?(self.deleter_attribute.to_sym) && has_stamper?
-              self.send("#{self.deleter_attribute}=".to_sym, self.class.stamper_class.stamper.id)
+              sid = self.class.stamper_class.stamper.is_a?(Fixnum) ? self.class.stamper_class.stamper : self.class.stamper_class.stamper.id
+              self.send("#{self.deleter_attribute}=".to_sym, sid)
               save
             end
           end
